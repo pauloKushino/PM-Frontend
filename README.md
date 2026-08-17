@@ -1,4 +1,19 @@
-# PMFrontend
+# PM Frontend
+
+Frontend Angular do cadastro de produtos. A aplicação possui login simulado, rotas protegidas
+e um CRUD funcional com dados mantidos em memória, sem depender do banco de dados.
+
+## Funcionalidades
+
+- listagem responsiva de produtos;
+- cadastro, edição e exclusão com confirmação;
+- validação dos campos e mensagens de retorno;
+- modelo compatível com o backend (`nome`, `descricao`, `preco`, `quantidadeEstoque` e `categoria`);
+- navegação com rotas filhas em `/produtos`;
+- componentes visuais do Material Design Bootstrap.
+
+Os dados mockados são reiniciados sempre que a página é recarregada. Para entrar, use qualquer
+e-mail válido e uma senha com pelo menos quatro caracteres.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.21.
 

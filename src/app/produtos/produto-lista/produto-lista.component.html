@@ -1,1 +1,63 @@
-<p>produto-lista works!</p>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-0">Produtos</h3>
+      <p class="text-muted mb-0">Gerencie o catálogo de produtos</p>
+    </div>
+    <a routerLink="/produtos/novo" class="btn btn-primary">
+      <i class="fa-solid fa-plus me-2"></i>Novo produto
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      @if (produtos().length === 0) {
+        <div class="text-center text-muted py-5">
+          <i class="fa-solid fa-box-open fa-2x mb-3 d-block"></i>
+          Nenhum produto cadastrado ainda.
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th class="text-end">Preço</th>
+                <th class="text-end">Quantidade</th>
+                <th class="text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (produto of produtos(); track produto.id) {
+                <tr>
+                  <td class="fw-semibold">{{ produto.nome }}</td>
+                  <td class="text-muted">{{ produto.descricao }}</td>
+                  <td class="text-end">{{ produto.preco | currency: 'BRL' }}</td>
+                  <td class="text-end">{{ produto.quantidade }}</td>
+                  <td class="text-center">
+                    <a
+                      [routerLink]="['/produtos', produto.id, 'editar']"
+                      class="btn btn-sm btn-outline-primary me-2"
+                      title="Editar"
+                    >
+                      <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger"
+                      title="Excluir"
+                      (click)="remover(produto.id, produto.nome)"
+                    >
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

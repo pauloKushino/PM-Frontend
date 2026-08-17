@@ -1,7 +1,5 @@
-<div class="container">
-  <div class="d-flex justify-content-center align-items-center" style="height: 100vh">
-    <div class="text-center">
-      <h5 class="mb-3">PM 1 - CRUD</h5>
-    </div>
-  </div>
-</div>
+@if (estaLogado()) {
+  <app-navbar></app-navbar>
+}
+
+<router-outlet></router-outlet>

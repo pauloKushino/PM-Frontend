@@ -18,31 +18,44 @@ export class ProdutoFormComponent {
   private readonly idProduto = signal<number | null>(this.lerIdDaRota());
 
   protected readonly modoEdicao = computed(() => this.idProduto() !== null);
+  protected readonly erroCarregamento = signal<string | null>(null);
+  protected readonly nomeProduto = signal('');
 
   protected readonly form = this.fb.nonNullable.group({
     nome: ['', [Validators.required, Validators.minLength(2)]],
     descricao: ['', [Validators.required]],
     preco: [0, [Validators.required, Validators.min(0.01)]],
-    quantidade: [0, [Validators.required, Validators.min(0)]],
+    quantidadeEstoque: [0, [Validators.required, Validators.min(0)]],
+    categoria: ['', [Validators.required, Validators.minLength(2)]],
   });
 
   constructor() {
     const id = this.idProduto();
     if (id !== null) {
-      const produto = this.produtoService.obterPorId(id);
-      if (produto) {
-        this.form.setValue({
-          nome: produto.nome,
-          descricao: produto.descricao,
-          preco: produto.preco,
-          quantidade: produto.quantidade,
-        });
+      if (!Number.isInteger(id) || id <= 0) {
+        this.erroCarregamento.set('O identificador informado para o produto é inválido.');
+        return;
       }
+
+      const produto = this.produtoService.obterPorId(id);
+      if (!produto) {
+        this.erroCarregamento.set('Não foi possível encontrar esse produto na lista mockada.');
+        return;
+      }
+
+      this.nomeProduto.set(produto.nome);
+      this.form.setValue({
+        nome: produto.nome,
+        descricao: produto.descricao,
+        preco: produto.preco,
+        quantidadeEstoque: produto.quantidadeEstoque,
+        categoria: produto.categoria,
+      });
     }
   }
 
   salvar(): void {
-    if (this.form.invalid) {
+    if (this.erroCarregamento() || this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
@@ -51,7 +64,11 @@ export class ProdutoFormComponent {
     const id = this.idProduto();
 
     if (id !== null) {
-      this.produtoService.atualizar(id, dados);
+      const produtoAtualizado = this.produtoService.atualizar(id, dados);
+      if (!produtoAtualizado) {
+        this.erroCarregamento.set('Não foi possível encontrar esse produto para edição.');
+        return;
+      }
     } else {
       this.produtoService.criar(dados);
     }
@@ -59,8 +76,20 @@ export class ProdutoFormComponent {
     this.router.navigateByUrl('/produtos');
   }
 
+  remover(): void {
+    const id = this.idProduto();
+    if (id === null || this.erroCarregamento()) {
+      return;
+    }
+
+    const confirmou = confirm(`Deseja realmente excluir o produto "${this.nomeProduto()}"?`);
+    if (confirmou && this.produtoService.remover(id)) {
+      this.router.navigateByUrl('/produtos');
+    }
+  }
+
   private lerIdDaRota(): number | null {
     const idParam = this.route.snapshot.paramMap.get('id');
-    return idParam ? Number(idParam) : null;
+    return idParam === null ? null : Number(idParam);
   }
 }

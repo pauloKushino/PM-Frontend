@@ -8,79 +8,118 @@
     </h3>
   </div>
 
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
-      <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-        <div class="mb-3">
-          <label for="nome" class="form-label">Nome</label>
-          <input
-            id="nome"
-            type="text"
-            class="form-control"
-            formControlName="nome"
-            placeholder="Ex.: Notebook Gamer"
-            [class.is-invalid]="form.controls.nome.invalid && form.controls.nome.touched"
-          />
-          @if (form.controls.nome.invalid && form.controls.nome.touched) {
-            <div class="invalid-feedback">Informe o nome do produto.</div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label for="descricao" class="form-label">Descrição</label>
-          <textarea
-            id="descricao"
-            class="form-control"
-            rows="3"
-            formControlName="descricao"
-            placeholder="Detalhes do produto"
-            [class.is-invalid]="form.controls.descricao.invalid && form.controls.descricao.touched"
-          ></textarea>
-          @if (form.controls.descricao.invalid && form.controls.descricao.touched) {
-            <div class="invalid-feedback">Informe uma descrição.</div>
-          }
-        </div>
-
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="preco" class="form-label">Preço (R$)</label>
-            <input
-              id="preco"
-              type="number"
-              step="0.01"
-              min="0"
-              class="form-control"
-              formControlName="preco"
-              [class.is-invalid]="form.controls.preco.invalid && form.controls.preco.touched"
-            />
-            @if (form.controls.preco.invalid && form.controls.preco.touched) {
-              <div class="invalid-feedback">Informe um preço válido.</div>
-            }
-          </div>
-
-          <div class="col-md-6 mb-3">
-            <label for="quantidade" class="form-label">Quantidade</label>
-            <input
-              id="quantidade"
-              type="number"
-              min="0"
-              class="form-control"
-              formControlName="quantidade"
-              [class.is-invalid]="form.controls.quantidade.invalid && form.controls.quantidade.touched"
-            />
-            @if (form.controls.quantidade.invalid && form.controls.quantidade.touched) {
-              <div class="invalid-feedback">Informe a quantidade em estoque.</div>
-            }
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-end gap-2 mt-3">
-          <a routerLink="/produtos" class="btn btn-outline-secondary">Cancelar</a>
-          <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-check me-2"></i>Salvar
-          </button>
-        </div>
-      </form>
+  @if (erroCarregamento(); as erro) {
+    <div class="alert alert-danger shadow-sm" role="alert">
+      <i class="fa-solid fa-circle-exclamation me-2"></i>{{ erro }}
     </div>
-  </div>
+    <a routerLink="/produtos" class="btn btn-outline-primary">
+      <i class="fa-solid fa-arrow-left me-2"></i>Voltar para a listagem
+    </a>
+  } @else {
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <div class="row">
+            <div class="col-md-7 mb-3">
+              <label for="nome" class="form-label">Nome</label>
+              <input
+                id="nome"
+                type="text"
+                class="form-control"
+                formControlName="nome"
+                placeholder="Ex.: Notebook Gamer"
+                [class.is-invalid]="form.controls.nome.invalid && form.controls.nome.touched"
+              />
+              @if (form.controls.nome.invalid && form.controls.nome.touched) {
+                <div class="invalid-feedback">Informe um nome com pelo menos 2 caracteres.</div>
+              }
+            </div>
+
+            <div class="col-md-5 mb-3">
+              <label for="categoria" class="form-label">Categoria</label>
+              <input
+                id="categoria"
+                type="text"
+                class="form-control"
+                formControlName="categoria"
+                placeholder="Ex.: Informática"
+                [class.is-invalid]="form.controls.categoria.invalid && form.controls.categoria.touched"
+              />
+              @if (form.controls.categoria.invalid && form.controls.categoria.touched) {
+                <div class="invalid-feedback">Informe uma categoria.</div>
+              }
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="descricao" class="form-label">Descrição</label>
+            <textarea
+              id="descricao"
+              class="form-control"
+              rows="3"
+              formControlName="descricao"
+              placeholder="Detalhes do produto"
+              [class.is-invalid]="form.controls.descricao.invalid && form.controls.descricao.touched"
+            ></textarea>
+            @if (form.controls.descricao.invalid && form.controls.descricao.touched) {
+              <div class="invalid-feedback">Informe uma descrição.</div>
+            }
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="preco" class="form-label">Preço (R$)</label>
+              <input
+                id="preco"
+                type="number"
+                step="0.01"
+                min="0.01"
+                class="form-control"
+                formControlName="preco"
+                [class.is-invalid]="form.controls.preco.invalid && form.controls.preco.touched"
+              />
+              @if (form.controls.preco.invalid && form.controls.preco.touched) {
+                <div class="invalid-feedback">Informe um preço maior que zero.</div>
+              }
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="quantidadeEstoque" class="form-label">Quantidade em estoque</label>
+              <input
+                id="quantidadeEstoque"
+                type="number"
+                min="0"
+                class="form-control"
+                formControlName="quantidadeEstoque"
+                [class.is-invalid]="
+                  form.controls.quantidadeEstoque.invalid && form.controls.quantidadeEstoque.touched
+                "
+              />
+              @if (
+                form.controls.quantidadeEstoque.invalid && form.controls.quantidadeEstoque.touched
+              ) {
+                <div class="invalid-feedback">Informe uma quantidade igual ou maior que zero.</div>
+              }
+            </div>
+          </div>
+
+          <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-3">
+            <div>
+              @if (modoEdicao()) {
+                <button type="button" class="btn btn-outline-danger" (click)="remover()">
+                  <i class="fa-solid fa-trash me-2"></i>Excluir produto
+                </button>
+              }
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <a routerLink="/produtos" class="btn btn-outline-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-check me-2"></i>Salvar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
 </div>

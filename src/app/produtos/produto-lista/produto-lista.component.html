@@ -9,6 +9,30 @@
     </a>
   </div>
 
+  @if (mensagem(); as aviso) {
+    <div
+      class="alert d-flex align-items-center justify-content-between"
+      [class.alert-success]="aviso.tipo === 'sucesso'"
+      [class.alert-danger]="aviso.tipo === 'erro'"
+      role="alert"
+    >
+      <span>
+        <i
+          class="fa-solid me-2"
+          [class.fa-circle-check]="aviso.tipo === 'sucesso'"
+          [class.fa-circle-exclamation]="aviso.tipo === 'erro'"
+        ></i>
+        {{ aviso.texto }}
+      </span>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Fechar mensagem"
+        (click)="limparMensagem()"
+      ></button>
+    </div>
+  }
+
   <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
       @if (produtos().length === 0) {
@@ -22,9 +46,10 @@
             <thead class="table-light">
               <tr>
                 <th>Nome</th>
+                <th>Categoria</th>
                 <th>Descrição</th>
                 <th class="text-end">Preço</th>
-                <th class="text-end">Quantidade</th>
+                <th class="text-end">Estoque</th>
                 <th class="text-center">Ações</th>
               </tr>
             </thead>
@@ -32,9 +57,10 @@
               @for (produto of produtos(); track produto.id) {
                 <tr>
                   <td class="fw-semibold">{{ produto.nome }}</td>
+                  <td><span class="badge badge-info">{{ produto.categoria }}</span></td>
                   <td class="text-muted">{{ produto.descricao }}</td>
                   <td class="text-end">{{ produto.preco | currency: 'BRL' }}</td>
-                  <td class="text-end">{{ produto.quantidade }}</td>
+                  <td class="text-end">{{ produto.quantidadeEstoque }}</td>
                   <td class="text-center">
                     <a
                       [routerLink]="['/produtos', produto.id, 'editar']"

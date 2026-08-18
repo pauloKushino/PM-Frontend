@@ -3,7 +3,8 @@ export interface Produto {
   nome: string;
   descricao: string;
   preco: number;
-  quantidade: number;
+  quantidadeEstoque: number;
+  categoria: string;
 }
 
 export type NovoProduto = Omit<Produto, 'id'>;
